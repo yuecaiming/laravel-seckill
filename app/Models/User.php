@@ -2,43 +2,67 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['username', 'email', 'password'];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $visible = ['username', 'email'];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function getRouteKeyName(): string
+    {
+        return 'username';
+    }
+
+//    public function articles(): HasMany
+//    {
+//        return $this->hasMany(Article::class);
+//    }
+
+//    public function favoritedArticles(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Article::class);
+//    }
+
+//    public function followers(): BelongsToMany
+//    {
+//        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id');
+//    }
+//
+//    public function following(): BelongsToMany
+//    {
+//        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id');
+//    }
+//
+//    public function doesUserFollowAnotherUser(int $followerId, int $followingId): bool
+//    {
+//        return $this->where('id', $followerId)->whereRelation('following', 'id', $followingId)->exists();
+//    }
+//
+//    public function doesUserFollowArticle(int $userId, int $articleId): bool
+//    {
+//        return $this->where('id', $userId)->whereRelation('favoritedArticles', 'id', $articleId)->exists();
+//    }
+
+    public function setPasswordAttribute(string $password): void
+    {
+        $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }
