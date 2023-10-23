@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\reservation\AddUserRequest;
+use App\Http\Requests\reservation\CancelUserRequest;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
@@ -13,6 +14,7 @@ use App\Services\ReserveService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ReserveController extends Controller
 {
@@ -52,12 +54,32 @@ class ReserveController extends Controller
         return response()->json(
             [
                 'code' => 200,
-                'message' => '用户预约关系创建成功',
+                'message' => '成功添加预约资格',
                 'data' => [
                     'reserve_id' =>  $reserveUser->id,
                 ],
             ]
         );
+    }
+
+    public function cancelUser($reserveId, ReserveUser $reserveUser)
+    {
+        // 验证 $reserveId 是否是数字
+        if(!is_numeric($reserveId)) {
+            return response()->json([
+                'code' => 201,
+                'message' => '参数有误！',
+                'data' => [],
+            ]);
+        }
+        // 删除预约关系
+        ReserveUser::destroy($reserveId);
+
+        return response()->json([
+            'code' => 200,
+            'message' => '成功取消预约资格',
+            'data' => [],
+        ]);
     }
 
     public function show(): array

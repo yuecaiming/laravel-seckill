@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,5 +48,22 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        // 自定义处理 ValidationException 类型的异常
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'code' => 201,
+                'status' => 'error',
+                'data' => [
+                    'message' => $exception->errors(),
+                ],
+            ], 422);
+        }
+
+        // 其他类型的异常，使用默认处理方式
+        return parent::render($request, $exception);
     }
 }

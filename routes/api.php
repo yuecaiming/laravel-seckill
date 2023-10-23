@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\ReserveInfo;
 Route::prefix('reserve')->group(function () {
     Route::post('/', [ReserveController::class, 'create']);
-    Route::post('/{reserveInfoId}/users', [ReserveController::class, 'addUser']);
+    Route::post('/{reserveInfoId}/users', [ReserveController::class, 'addUser']); // 添加预约资格
+    Route::delete('/{reserveId}/users', [ReserveController::class, 'cancelUser']); // 取消预约资格
 
 });
 
