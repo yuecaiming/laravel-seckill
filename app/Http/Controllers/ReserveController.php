@@ -10,6 +10,7 @@ use App\Http\Requests\reservation\AddRequest;
 use App\Models\ReserveInfo;
 use App\Models\ReserveUser;
 use App\Services\ReserveService;
+use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 
@@ -23,7 +24,14 @@ class ReserveController extends Controller
         return response()->json(['message' => '预约活动创建成功', 'data' => $reserveInfo]);
     }
 
-    public function addUser(AddUserRequest $request, $reserveInfoId, ReserveService $reserveService, ReserveUser $reserveUser)
+    /**
+     * 添加预约资格
+     * @param AddUserRequest $request
+     * @param $reserveInfoId 预约活动id
+     * @param ReserveUser $reserveUser
+     * @return JsonResponse
+     */
+    public function addUser(AddUserRequest $request, $reserveInfoId, ReserveUser $reserveUser)
     {
         // 查找对应的预约活动
         $reserveInfo = ReserveInfo::find($reserveInfoId);
