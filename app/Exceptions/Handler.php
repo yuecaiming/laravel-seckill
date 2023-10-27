@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -61,6 +61,24 @@ class Handler extends ExceptionHandler
                     'message' => $exception->errors(),
                 ],
             ], 422);
+        }
+
+        // 自定义处理 InternalException 类型的异常
+//        if ($exception instanceof InternalException) {
+//            // 执行自定义的异常渲染逻辑
+//            // 例如，返回一个自定义的错误页面
+//            return response()->json([
+//                'code' => 201,
+//                'msg' => '操作失败',
+//            ], 400);
+//        }
+
+        if ($exception instanceof QueryException) {
+            // 返回自定义的错误响应
+            return response()->json([
+                'code' => 201,
+                'msg' => '操作失败',
+            ], 400);
         }
 
         // 其他类型的异常，使用默认处理方式

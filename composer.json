@@ -11,7 +11,8 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "nesbot/carbon": "^2.70",
-        "predis/predis": "^2.2"
+        "predis/predis": "^2.2",
+      "ext-redis": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

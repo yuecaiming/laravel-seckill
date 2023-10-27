@@ -14,7 +14,7 @@ use App\Services\ReserveService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class ReserveController extends Controller
 {
@@ -23,7 +23,12 @@ class ReserveController extends Controller
         // 创建预约活动
         $reserveInfo = ReserveInfo::create($request->all());
 
-        return response()->json(['message' => '预约活动创建成功', 'data' => $reserveInfo]);
+        return $this->success(
+            [
+                'msg' => '预约活动创建成功',
+                'data' => $reserveInfo
+            ]
+        );
     }
 
     /**
@@ -38,7 +43,7 @@ class ReserveController extends Controller
         // 查找对应的预约活动
         $reserveInfo = ReserveInfo::find($reserveInfoId);
         if (empty($reserveInfo)) {
-            return response()->json(['message' => '用户预约关系创建失败', 'data' => []]);
+            return $this->error(['msg' => '用户预约关系创建失败', 'data' => []]);
         }
 
         // 创建用户预约关系
@@ -51,10 +56,16 @@ class ReserveController extends Controller
         $reserveUser->fill($request->all());
         $reserveUser->save();
 
-        return response()->json(
+        //预约成功后，把数据缓存起来
+        $params = $request->collect();
+        $redis_key = "reserve_user_".$params->get("user_id");
+        $redis_field = $params->get("sku_id");
+        $value = json_encode($reserveInfo);
+        Redis::hset($redis_key, $redis_field, $value);
+
+        return $this->success(
             [
-                'code' => 200,
-                'message' => '成功添加预约资格',
+                'msg' => '成功添加预约资格',
                 'data' => [
                     'reserve_id' =>  $reserveUser->id,
                 ],
@@ -66,20 +77,21 @@ class ReserveController extends Controller
     {
         // 验证 $reserveId 是否是数字
         if(!is_numeric($reserveId)) {
-            return response()->json([
-                'code' => 201,
-                'message' => '参数有误！',
+            return $this->error([
+                'msg' => '参数有误！',
                 'data' => [],
             ]);
         }
         // 删除预约关系
         ReserveUser::destroy($reserveId);
 
-        return response()->json([
-            'code' => 200,
-            'message' => '成功取消预约资格',
-            'data' => [],
-        ]);
+        return $this->success(
+            [
+                'code' => 200,
+                'message' => '成功取消预约资格',
+                'data' => [],
+            ]
+        );
     }
 
     public function show(): array
