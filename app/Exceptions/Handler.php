@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
@@ -78,6 +79,15 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'code' => 201,
                 'msg' => '操作失败',
+            ], 400);
+        }
+
+        // 自定义处理 Exception 类型的异常
+        if ($exception instanceof Exception) {
+            // 返回自定义的错误响应
+            return response()->json([
+                'code' => 201,
+                'msg' => '操作失败11',
             ], 400);
         }
 

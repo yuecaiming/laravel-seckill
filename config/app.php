@@ -212,4 +212,8 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    //雪花算法需要的数据中心ID
+    'datacenter_id' => env('APP_DATACENTER_ID'),
+    //雪花算法需要的机器ID
+    'machine_id' => env('APP_MACHINE_ID'),
 ];

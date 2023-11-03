@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReserveController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,10 @@ Route::prefix('reserve')->group(function () {
     Route::post('/', [ReserveController::class, 'create']);
     Route::post('/{reserveInfoId}/users', [ReserveController::class, 'addUser']); // 添加预约资格
     Route::delete('/{reserveId}/users', [ReserveController::class, 'cancelUser']); // 取消预约资格
-
 });
+
+Route::prefix('order')->group(function () {
+    Route::post('/submitData', [OrderController::class, 'submitData']); // 提交订单
+});
+
 

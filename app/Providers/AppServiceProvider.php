@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\SnowflakeHelper;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind('snowflake', function () {
+            return new SnowflakeHelper( config('app.datacenter_id'), config('app.machine_id')); // 设置你的数据中心ID和工作节点ID
+        });
     }
 
     /**
