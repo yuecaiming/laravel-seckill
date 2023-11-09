@@ -46,7 +46,7 @@ class OrderService
         $order_info = [];
 
         // 启动事务
-        DB::startTrans();
+        DB::beginTransaction();
         // 捕获异常
         try{
             $order_info['order_id'] = self::PRE_ORDER_ID.app('snowflake')->nextId();
@@ -60,11 +60,14 @@ class OrderService
             $order = Order::create($order_info);
 
             // 预占库存
+
             // 更新订单-下单成功待支付
 
+            //提交事务
+            DB::commit();
         }catch(\Exception $e) {
-            DB::rollback();
-            return DataReturn($e->getMessage(), -1);
+            DB::rollBack();
+            return response()->json(['msg' => $e->getMessage()], 201);
         }
 
 
@@ -74,4 +77,10 @@ class OrderService
 
         // 其他：包括一些数据统计等，可通过消息来解耦完成
     }
+
+    public function updateStockNum(){
+
+    }
 }
+
+

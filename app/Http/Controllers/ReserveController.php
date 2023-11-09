@@ -18,11 +18,13 @@ use Illuminate\Support\Facades\Redis;
 
 class ReserveController extends Controller
 {
+    const MaxCapacity = 10; //预约人数上限
     public function create(AddRequest $request)
     {
         // 创建预约活动
         $reserveInfo = ReserveInfo::create($request->all());
-
+        //缓存预约结束时间
+        Redis::set('reserve_end_time:'.$reserveInfo->id,Carbon::parse($reserveInfo->reserve_end_time)->timestamp);
         return $this->success(
             [
                 'msg' => '预约活动创建成功',
@@ -40,8 +42,17 @@ class ReserveController extends Controller
      */
     public function addUser(AddUserRequest $request, $reserveInfoId, ReserveUser $reserveUser)
     {
+        //进行预约熔断处理，预约人数超过指定上限，更改活动状态为：等待秒杀
+        // 获取当前已预约人数和预约期结束时间
+        $reservedCount = Redis::get('reserved_count:'.$reserveInfoId);
+        $reserveEndTime = Redis::get('reserve_end_time:'.$reserveInfoId);
+        // 如果预约期已结束，或已达到预约人数上限，返回预约失败的响应
+        if (($reserveEndTime && time() > $reserveEndTime) || ($reservedCount && $reservedCount >= self::MaxCapacity)) {
+            return $this->error(['msg' => '当前无法预约！', 'data' => []]);
+        }
         // 查找对应的预约活动
         $reserveInfo = ReserveInfo::find($reserveInfoId);
+
         if (empty($reserveInfo)) {
             return $this->error(['msg' => '用户预约关系创建失败', 'data' => []]);
         }
@@ -62,6 +73,11 @@ class ReserveController extends Controller
         $redis_field = $params->get("sku_id");
         $value = json_encode($reserveInfo);
         Redis::hset($redis_key, $redis_field, $value);
+
+        // 更新已预约人数和预约期结束时间
+        $reservePeriod = Carbon::parse($reserveInfo->reserve_end_time)->timestamp;
+        Redis::incr('reserved_count:'.$reserveInfoId);
+        Redis::expire('reserved_count:'.$reserveInfoId, $reservePeriod);
 
         return $this->success(
             [
