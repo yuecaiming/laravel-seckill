@@ -1,0 +1,7 @@
+2023/11/02 11:32:54 [error] 11664#41496: *5 limiting requests, excess: 1.000 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"
+2023/11/02 11:33:17 [error] 11664#41496: *13 limiting requests, excess: 0.203 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"
+2023/11/02 11:33:22 [error] 11664#41496: *22 limiting requests, excess: 0.330 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"
+2023/11/02 11:34:34 [error] 4608#38540: *5 limiting requests, excess: 0.275 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"
+2023/11/02 14:07:47 [error] 4608#38540: *10 limiting requests, excess: 0.307 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"
+2023/11/02 14:08:36 [error] 41768#41296: *25 limiting requests, excess: 0.301 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"
+2023/11/02 14:08:50 [error] 41768#41296: *48 limiting requests, excess: 0.331 by zone "limit_by_user", client: 127.0.0.1, server: www.seckill.test, request: "POST /api/reserve/17/users HTTP/1.1", host: "www.seckill.test"

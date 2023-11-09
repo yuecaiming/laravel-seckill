@@ -1,0 +1,6 @@
+2023/11/02 11:29:09 [emerg] 37168#38612: location "/597" is outside location "/api/reserve/(\d+)/users" in D:\project\laravel-seckill\nginx/conf/../vhosts/www.seckill.test_80.conf:32
+2023/11/02 11:31:15 [emerg] 41336#28296: location "/597" is outside location "/api/reserve/(\d+)/users" in D:\project\laravel-seckill\nginx/conf/../vhosts/www.seckill.test_80.conf:32
+2023/11/09 14:39:57 [notice] 4144#16768: signal process started
+2023/11/09 14:40:57 [notice] 4832#2792: signal process started
+2023/11/09 14:40:57 [error] 4832#2792: CreateFile() "D:\project\laravel-seckill\nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2023/11/09 14:41:05 [notice] 4636#4808: signal process started
